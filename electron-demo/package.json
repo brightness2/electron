@@ -1,0 +1,40 @@
+{
+  "name": "electron-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx electron .",
+    "dist": "npx electron-builder --win --x64"
+  },
+  "author": "Brightness",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^11.2.3",
+    "electron-builder": "^22.9.1"
+  },
+  "build": { 
+    "electronDownload": { 
+      "mirror": "https://cdn.npm.taobao.org/dist/electron/" 
+    }, 
+    "productName": "electronDemo", 
+    "appId": "com.xxx.app", 
+    "copyright": "Brightness", 
+    "directories": { 
+      "output": "dist" 
+    }, 
+    "mac": { 
+      "target": [ 
+        "dmg", 
+        "zip" 
+      ] 
+    }, 
+    "win": { 
+      "target": [ 
+        "nsis", 
+        "zip" 
+      ] 
+    } 
+  }
+}

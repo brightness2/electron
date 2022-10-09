@@ -1,10 +1,12 @@
-const {app,BrowserWindow, ipcMain} = require('electron');
+const {app,BrowserWindow, ipcMain,Menu } = require('electron');
 const { default: WinState } = require('electron-win-state');
 const path = require('path')
 //判断是否开发环境
 const isDev = process.env.IS_DEV == "true" ? true : false;
 //是否优雅地展示窗口，就是等渲染进程准备好后再展示窗口，避免空白期
 const  grace_show = false;
+
+const isMac = process.platform === 'darwin';
 
 
 //屏蔽安全策略告警显示
@@ -29,8 +31,7 @@ const createWindow = ()=>{
     ipcMain.handle('ping',()=>'pong')
     if(isDev){
         ipcMain.handle('app_name',()=>{
-            const config = require(path.join(__dirname,'../../package.json'))
-            return config.name
+            return app.name
         })
     }
 
@@ -52,17 +53,30 @@ const createWindow = ()=>{
     //记录窗口最后的大小位置状态
     winState.manage(win)
 }
+/**
+ * 创建菜单
+ */
+const createMenu = ()=>{
+    const template = [
+        {
+            label:'文件',
+            submenu: [
+                isMac ? { role:'close',label:'退出' } : { role:'quit',label:'退出' }
+            ]
+        },
+    ]
+    
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
+}
 //应用准备完成时，创建窗口
 app.whenReady().then(()=>{
+    createMenu()
     createWindow()
-
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
 })
-
-
-
 //所有窗口关闭时，退出整个应用
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
